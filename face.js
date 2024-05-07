@@ -116,7 +116,7 @@ function Face() {
   
   left_eye_pos = segment_average(positions.left_eye);
   right_eye_pos = segment_average(positions.right_eye);
-  blobbyFace(0, left_eye_pos[0], left_eye_pos[1], 0.5, right_eye_pos[0], right_eye_pos[1], 0.5, 0, 0, 0.5, 0, 0);
+  blobbyFace(0, left_eye_pos[0], left_eye_pos[1], 0.5, right_eye_pos[0], right_eye_pos[1], 0.5, 0, 1, 50, 180, 2);
   
   }
 
@@ -214,6 +214,7 @@ function blobbyFace(face_type, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, f
   translate(head.x, head.y);
   rotate(head_tilt); 
   strokeWeight(outline_offset);
+  stroke(20);
 
   if(mouth_selection == 0) { // straight mouth
     line(-head.r/4, min(eye1_r, eye2_r)/1.5, head.r/4, min(eye1_r, eye2_r)/1.5);
