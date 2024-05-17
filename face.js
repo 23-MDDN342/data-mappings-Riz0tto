@@ -4,7 +4,7 @@
  */  
 
 // remove this or set to false to enable full program (load will be slower)
-var DEBUG_MODE = true;
+var DEBUG_MODE = false;
 
 // this can be used to set the number of sliders to show
 var NUM_SLIDERS = 3;
@@ -30,6 +30,7 @@ function segment_average(segment) {
 
 // This where you define your own face object
 function Face() {
+
   // these are state variables for a face
   // (your variables should be different!)
   this.detailColour = [204, 136, 17];
@@ -48,75 +49,78 @@ function Face() {
    *    bottom_lip, top_lip, nose_tip, nose_bridge, 
    */  
   this.draw = function(positions) {
-    console.log()
-    // head
-    ellipseMode(CENTER);
-    stroke(stroke_color);
-    fill(this.mainColour);
-    ellipse(segment_average(positions.chin)[0], 0, 3, 4);
-    noStroke();
+    { // template code
+  //   console.log()
+  //   // head
+  //   ellipseMode(CENTER);
+  //   stroke(stroke_color);
+  //   fill(this.mainColour);
+  //   ellipse(segment_average(positions.chin)[0], 0, 3, 4);
+  //   noStroke();
 
 
-    // mouth
-    fill(this.detailColour);
-    ellipse(segment_average(positions.bottom_lip)[0], segment_average(positions.bottom_lip)[1], 1.36, 0.25 * this.mouth_size);
+  //   // mouth
+  //   fill(this.detailColour);
+  //   ellipse(segment_average(positions.bottom_lip)[0], segment_average(positions.bottom_lip)[1], 1.36, 0.25 * this.mouth_size);
 
-    // eyebrows
-    fill( this.eyebrowColour);
-    stroke( this.eyebrowColour);
-    strokeWeight(0.08);
-    this.draw_segment(positions.left_eyebrow);
-    this.draw_segment(positions.right_eyebrow);
+  //   // eyebrows
+  //   fill( this.eyebrowColour);
+  //   stroke( this.eyebrowColour);
+  //   strokeWeight(0.08);
+  //   this.draw_segment(positions.left_eyebrow);
+  //   this.draw_segment(positions.right_eyebrow);
 
-    // draw the chin segment using points
-    fill(this.chinColour);
-    stroke(this.chinColour);
-    this.draw_segment(positions.chin);
+  //   // draw the chin segment using points
+  //   fill(this.chinColour);
+  //   stroke(this.chinColour);
+  //   this.draw_segment(positions.chin);
 
-    fill(100, 0, 100);
-    stroke(100, 0, 100);
-    this.draw_segment(positions.nose_bridge);
-    this.draw_segment(positions.nose_tip);
+  //   fill(100, 0, 100);
+  //   stroke(100, 0, 100);
+  //   this.draw_segment(positions.nose_bridge);
+  //   this.draw_segment(positions.nose_tip);
 
-    strokeWeight(0.03);
+  //   strokeWeight(0.03);
 
-    fill(this.lipColour);
-    stroke(this.lipColour);
-    this.draw_segment(positions.top_lip);
-    this.draw_segment(positions.bottom_lip);
+  //   fill(this.lipColour);
+  //   stroke(this.lipColour);
+  //   this.draw_segment(positions.top_lip);
+  //   this.draw_segment(positions.bottom_lip);
 
-    let left_eye_pos = segment_average(positions.left_eye);
-    let right_eye_pos = segment_average(positions.right_eye);
+  //   let left_eye_pos = segment_average(positions.left_eye);
+  //   let right_eye_pos = segment_average(positions.right_eye);
 
-    // eyes
-    noStroke();
-    let curEyeShift = 0.04 * this.eye_shift;
-    if(this.num_eyes == 2) {
-      fill(this.detailColour);
-      ellipse(left_eye_pos[0], left_eye_pos[1], 0.5, 0.33);
-      ellipse(right_eye_pos[0], right_eye_pos[1], 0.5, 0.33);
+  //   // eyes
+  //   noStroke();
+  //   let curEyeShift = 0.04 * this.eye_shift;
+  //   if(this.num_eyes == 2) {
+  //     fill(this.detailColour);
+  //     ellipse(left_eye_pos[0], left_eye_pos[1], 0.5, 0.33);
+  //     ellipse(right_eye_pos[0], right_eye_pos[1], 0.5, 0.33);
 
-      // fill(this.mainColour);
-      // ellipse(left_eye_pos[0] + curEyeShift, left_eye_pos[1], 0.18);
-      // ellipse(right_eye_pos[0] + curEyeShift, right_eye_pos[1], 0.18);
+  //     // fill(this.mainColour);
+  //     // ellipse(left_eye_pos[0] + curEyeShift, left_eye_pos[1], 0.18);
+  //     // ellipse(right_eye_pos[0] + curEyeShift, right_eye_pos[1], 0.18);
+  //   }
+  //   else {
+  //     let eyePosX = (left_eye_pos[0] + right_eye_pos[0]) / 2;
+  //     let eyePosY = (left_eye_pos[1] + right_eye_pos[1]) / 2;
+
+  //     fill(this.detailColour);
+  //     ellipse(eyePosX, eyePosY, 0.45, 0.27);
+
+  //     fill(this.mainColour);
+  //     ellipse(eyePosX - 0.1 + curEyeShift, eyePosY, 0.18);
+  //   }
+
+  //  // fill(0)
+  //  //ellipse(0,0, 0.5,0.5) center point
+  //  //rect(-2,-2,4.5,4) sizing debug 
     }
-    else {
-      let eyePosX = (left_eye_pos[0] + right_eye_pos[0]) / 2;
-      let eyePosY = (left_eye_pos[1] + right_eye_pos[1]) / 2;
-
-      fill(this.detailColour);
-      ellipse(eyePosX, eyePosY, 0.45, 0.27);
-
-      fill(this.mainColour);
-      ellipse(eyePosX - 0.1 + curEyeShift, eyePosY, 0.18);
-    }
-   // fill(0)
-   //ellipse(0,0, 0.5,0.5) center point
-   //rect(-2,-2,4.5,4) sizing debug 
   
   left_eye_pos = segment_average(positions.left_eye);
   right_eye_pos = segment_average(positions.right_eye);
-  blobbyFace(0, left_eye_pos[0], left_eye_pos[1], 0.5, right_eye_pos[0], right_eye_pos[1], 0.5, 0, 1, 50, 180, 2);
+  blobbyFace(positions, left_eye_pos[0], left_eye_pos[1], 0.5, right_eye_pos[0], right_eye_pos[1], 0.5, 0, 1, 50, 180, 2);
   
   }
 
@@ -159,12 +163,12 @@ function Face() {
   
 }
 
-function blobbyFace(face_type, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, face_hue, eye_selection, pupil_ratio, iris_hue, mouth_selection) {
+function blobbyFace(positions, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, face_hue, eye_selection, pupil_ratio, iris_hue) {
   var head = 
   {
-    x: min(eye1_x, eye2_x) + (abs(eye1_x - eye2_x)/2),
-    y: min(eye1_y, eye2_y) + (abs(eye1_y - eye2_y)/2),
-    r: dist(eye1_x, eye1_y, eye2_x, eye2_y)/2
+    x: segment_average(positions.nose_tip)[0],
+    y: segment_average(positions.nose_bridge)[1],
+    r: dist((positions.chin)[0][0], (positions.chin)[0][1], (positions.chin)[positions.chin.length - 1][0], (positions.chin)[positions.chin.length - 1][1])/2
   };
 
   // finding the rotation of the head so facial features can be rotated with it, head rotation is based on the position of the eyes - it is not created and then rotated
@@ -177,66 +181,55 @@ function blobbyFace(face_type, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, f
   strokeWeight(0);
   
   // draw head with black outline
-  var outline_offset = ((head.r + eye1_r + eye2_r) /20);
+  var outline_offset = ((head.r/2 + eye1_r + eye2_r) /20);
   
-  if (face_type == 0) { // circular head
-    fill(20);
+// circular head
+  // fill(20);
 
-    ellipse(eye1_x, eye1_y, eye1_r + outline_offset);
-    ellipse(eye2_x, eye2_y, eye2_r + outline_offset);
-    ellipse(head.x, head.y, head.r + outline_offset);
+  // ellipse(eye1_x, eye1_y, eye1_r + outline_offset);
+  // ellipse(eye2_x, eye2_y, eye2_r + outline_offset);
+  // ellipse(head.x, head.y, head.r + outline_offset);
 
-    fill(face_hue, 60, 95);
+  // fill(face_hue, 60, 95);
 
-    ellipse(head.x, head.y, head.r); 
+  // ellipse(head.x, head.y, head.r); 
 
-  } else if (face_type == 1) { // diamond head
-    fill(20);
 
-    ellipse(eye1_x, eye1_y, eye1_r + outline_offset);
-    ellipse(eye2_x, eye2_y, eye2_r + outline_offset);
-
-    push();
-
-    rectMode(CENTER);
-    translate(head.x, head.y);
-    rotate(head_tilt+45)
-    rect(0, 0, 1.5*head.r + outline_offset*2, 1.5*head.r + outline_offset*2, head.r/4);
-    fill(face_hue, 60, 95);
-    rect(0, 0, 1.5*head.r, 1.5*head.r, head.r/4);
-
-    pop();
-  }
 
   // draw mouth
   push();
 
-  translate(head.x, head.y);
-  rotate(head_tilt); 
   strokeWeight(outline_offset);
-  stroke(20);
+  colorMode(HSB, 100);
+  fill(face_hue, 50, 30);
+  stroke(20);  
+  
 
-  if(mouth_selection == 0) { // straight mouth
-    line(-head.r/4, min(eye1_r, eye2_r)/1.5, head.r/4, min(eye1_r, eye2_r)/1.5);
-  } 
-  else if (mouth_selection == 1) { // wobbly mouth
-    beginShape();
-    curveVertex(-head.r, min(eye1_r, eye2_r)*1.5);
-    curveVertex(-head.r/4, min(eye1_r, eye2_r)/1.5);
-    curveVertex(0, min(eye1_r, eye2_r)/1.5);
-    curveVertex(head.r/4, min(eye1_r, eye2_r)/1.5);
-    curveVertex(head.r, min(eye1_r, eye2_r)*1.5);
-    endShape();
-  }
-  else if (mouth_selection == 2) { // smile mouth
-    beginShape();
-    curveVertex(-head.r/4, min(eye1_r, eye2_r)/2.5);
-    curveVertex(-head.r/4, min(eye1_r, eye2_r)/1.5);
-    curveVertex(0, min(eye1_r, eye2_r)/1.3);
-    curveVertex(head.r/4, min(eye1_r, eye2_r)/1.5);
-    curveVertex(head.r/4, min(eye1_r, eye2_r)/2.5);
-    endShape();
-  }
+  beginShape();
+
+  curveVertex((positions.bottom_lip[0])[0], (positions.bottom_lip[0])[1]);
+  curveVertex((positions.bottom_lip[0])[0], (positions.bottom_lip[0])[1]);
+  curveVertex((positions.bottom_lip[1])[0], (positions.bottom_lip[1])[1]);
+  curveVertex((positions.bottom_lip[2])[0], (positions.bottom_lip[2])[1]);
+  curveVertex((positions.bottom_lip[3])[0], (positions.bottom_lip[3])[1]);
+  curveVertex((positions.bottom_lip[4])[0], (positions.bottom_lip[4])[1]);
+  curveVertex((positions.bottom_lip[5])[0], (positions.bottom_lip[5])[1]);
+  curveVertex((positions.bottom_lip[6])[0], (positions.bottom_lip[6])[1]);
+  curveVertex((positions.bottom_lip[6])[0], (positions.bottom_lip[6])[1]);
+
+
+  curveVertex((positions.top_lip[0])[0], (positions.top_lip[0])[1]);
+  curveVertex((positions.top_lip[0])[0], (positions.top_lip[0])[1]);
+  curveVertex((positions.top_lip[1])[0], (positions.top_lip[1])[1]);
+  curveVertex((positions.top_lip[2])[0], (positions.top_lip[2])[1]);
+  curveVertex((positions.top_lip[3])[0], (positions.top_lip[3])[1]);
+  curveVertex((positions.top_lip[4])[0], (positions.top_lip[4])[1]);
+  curveVertex((positions.top_lip[5])[0], (positions.top_lip[5])[1]);
+  curveVertex((positions.top_lip[6])[0], (positions.top_lip[6])[1]);
+  curveVertex((positions.top_lip[6])[0], (positions.top_lip[6])[1]);
+
+  endShape();
+  
 
   pop();  
 
