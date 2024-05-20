@@ -166,9 +166,10 @@ function Face() {
 function blobbyFace(positions, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, face_hue, eye_selection, pupil_ratio, iris_hue) {
   var head = 
   {
-    x: segment_average(positions.nose_tip)[0],
-    y: segment_average(positions.nose_bridge)[1],
-    r: dist((positions.chin)[0][0], (positions.chin)[0][1], (positions.chin)[positions.chin.length - 1][0], (positions.chin)[positions.chin.length - 1][1])/2
+    x: segment_average(positions.chin)[0],
+    y: positions.chin[0][1],
+    w: dist((positions.chin)[0][0], (positions.chin)[0][1], (positions.chin)[positions.chin.length - 1][0], (positions.chin)[positions.chin.length - 1][1])/2,
+    h: dist((positions.chin)[0][0], (positions.chin)[0][1], ((positions.chin)[0][0] + (positions.chin)[positions.chin.length - 1][0])/2, (positions.chin)[8][1])
   };
 
   // finding the rotation of the head so facial features can be rotated with it, head rotation is based on the position of the eyes - it is not created and then rotated
@@ -181,18 +182,18 @@ function blobbyFace(positions, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, f
   strokeWeight(0);
   
   // draw head with black outline
-  var outline_offset = ((head.r/2 + eye1_r + eye2_r) /20);
+  var outline_offset = ((head.w + eye1_r + eye2_r) /40);
   
 // circular head
-  // fill(20);
+  fill(20);
 
-  // ellipse(eye1_x, eye1_y, eye1_r + outline_offset);
-  // ellipse(eye2_x, eye2_y, eye2_r + outline_offset);
-  // ellipse(head.x, head.y, head.r + outline_offset);
+  ellipse(eye1_x, eye1_y, eye1_r + outline_offset);
+  ellipse(eye2_x, eye2_y, eye2_r + outline_offset);
+  ellipse(head.x, head.y, head.w + outline_offset, head.h +outline_offset);
 
-  // fill(face_hue, 60, 95);
+  fill(face_hue, 60, 95);
 
-  // ellipse(head.x, head.y, head.r); 
+  ellipse(head.x, head.y, head.w, head.h); 
 
 
 
@@ -207,18 +208,13 @@ function blobbyFace(positions, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, f
 
   beginShape();
 
-  curveVertex((positions.bottom_lip[0])[0], (positions.bottom_lip[0])[1]);
+  curveVertex((positions.top_lip[6])[0], (positions.top_lip[6])[1]);
   curveVertex((positions.bottom_lip[0])[0], (positions.bottom_lip[0])[1]);
   curveVertex((positions.bottom_lip[1])[0], (positions.bottom_lip[1])[1]);
   curveVertex((positions.bottom_lip[2])[0], (positions.bottom_lip[2])[1]);
   curveVertex((positions.bottom_lip[3])[0], (positions.bottom_lip[3])[1]);
   curveVertex((positions.bottom_lip[4])[0], (positions.bottom_lip[4])[1]);
   curveVertex((positions.bottom_lip[5])[0], (positions.bottom_lip[5])[1]);
-  curveVertex((positions.bottom_lip[6])[0], (positions.bottom_lip[6])[1]);
-  curveVertex((positions.bottom_lip[6])[0], (positions.bottom_lip[6])[1]);
-
-
-  curveVertex((positions.top_lip[0])[0], (positions.top_lip[0])[1]);
   curveVertex((positions.top_lip[0])[0], (positions.top_lip[0])[1]);
   curveVertex((positions.top_lip[1])[0], (positions.top_lip[1])[1]);
   curveVertex((positions.top_lip[2])[0], (positions.top_lip[2])[1]);
@@ -226,7 +222,7 @@ function blobbyFace(positions, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, f
   curveVertex((positions.top_lip[4])[0], (positions.top_lip[4])[1]);
   curveVertex((positions.top_lip[5])[0], (positions.top_lip[5])[1]);
   curveVertex((positions.top_lip[6])[0], (positions.top_lip[6])[1]);
-  curveVertex((positions.top_lip[6])[0], (positions.top_lip[6])[1]);
+  curveVertex((positions.bottom_lip[0])[0], (positions.bottom_lip[0])[1]);
 
   endShape();
   
