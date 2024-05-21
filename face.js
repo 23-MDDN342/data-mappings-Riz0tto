@@ -118,9 +118,9 @@ function Face() {
   //  //rect(-2,-2,4.5,4) sizing debug 
     }
   
-  left_eye_pos = segment_average(positions.left_eye);
-  right_eye_pos = segment_average(positions.right_eye);
-  blobbyFace(positions, left_eye_pos[0], left_eye_pos[1], 0.5, right_eye_pos[0], right_eye_pos[1], 0.5, 0, 1, 50, 180, 2);
+  left_eye_pos = positions.chin[0];
+  right_eye_pos = positions.chin[positions.chin.length-1];
+  blobbyFace(positions, left_eye_pos[0], left_eye_pos[1], 1, right_eye_pos[0], right_eye_pos[1], 1, 20, 1, 50, 180, 2);
   
   }
 
@@ -202,27 +202,23 @@ function blobbyFace(positions, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, f
 
   strokeWeight(outline_offset);
   colorMode(HSB, 100);
-  fill(face_hue, 50, 30);
+  fill(face_hue, 0, 100);
   stroke(20);  
-  
 
   beginShape();
 
-  curveVertex((positions.top_lip[6])[0], (positions.top_lip[6])[1]);
-  curveVertex((positions.bottom_lip[0])[0], (positions.bottom_lip[0])[1]);
-  curveVertex((positions.bottom_lip[1])[0], (positions.bottom_lip[1])[1]);
-  curveVertex((positions.bottom_lip[2])[0], (positions.bottom_lip[2])[1]);
-  curveVertex((positions.bottom_lip[3])[0], (positions.bottom_lip[3])[1]);
-  curveVertex((positions.bottom_lip[4])[0], (positions.bottom_lip[4])[1]);
-  curveVertex((positions.bottom_lip[5])[0], (positions.bottom_lip[5])[1]);
-  curveVertex((positions.top_lip[0])[0], (positions.top_lip[0])[1]);
-  curveVertex((positions.top_lip[1])[0], (positions.top_lip[1])[1]);
-  curveVertex((positions.top_lip[2])[0], (positions.top_lip[2])[1]);
-  curveVertex((positions.top_lip[3])[0], (positions.top_lip[3])[1]);
-  curveVertex((positions.top_lip[4])[0], (positions.top_lip[4])[1]);
-  curveVertex((positions.top_lip[5])[0], (positions.top_lip[5])[1]);
-  curveVertex((positions.top_lip[6])[0], (positions.top_lip[6])[1]);
-  curveVertex((positions.bottom_lip[0])[0], (positions.bottom_lip[0])[1]);
+  curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
+  curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
+  curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
+  curveVertex(positions.top_lip[8][0], positions.top_lip[8][1]);
+  curveVertex(positions.top_lip[9][0], positions.top_lip[9][1]);
+  curveVertex(positions.top_lip[10][0], positions.top_lip[10][1]);
+  curveVertex(positions.top_lip[11][0], positions.top_lip[11][1]);
+  curveVertex(positions.bottom_lip[8][0], positions.bottom_lip[8][1]);
+  curveVertex(positions.bottom_lip[9][0], positions.bottom_lip[9][1]);
+  curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
+  curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
+  curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
 
   endShape();
   
