@@ -120,7 +120,7 @@ function Face() {
   
   left_eye_pos = positions.chin[0];
   right_eye_pos = positions.chin[positions.chin.length-1];
-  blobbyFace(positions, left_eye_pos[0], left_eye_pos[1], 1, right_eye_pos[0], right_eye_pos[1], 1, 20, 1, 50, 180, 2);
+  this.blobbyFace(positions, left_eye_pos[0], left_eye_pos[1], 1, right_eye_pos[0], right_eye_pos[1], 1, 20, 50, 180, 2);
   
   }
 
@@ -147,149 +147,143 @@ function Face() {
 
   /* set internal properties based on list numbers 0-100 */
   this.setProperties = function(settings) {
-    this.num_eyes = int(map(settings[0], 0, 100, 1, 2));
-    this.eye_shift = map(settings[1], 0, 100, -2, 2);
+    this.left_eye_openness = map(settings[0], 0, 100, 0, 89.9);
+    this.right_eye_openness = map(settings[1], 0, 100, 0, 89.9);
     this.mouth_size = map(settings[2], 0, 100, 0.5, 8);
   }
 
   /* get internal properties as list of numbers 0-100 */
   this.getProperties = function() {
     let settings = new Array(3);
-    settings[0] = map(this.num_eyes, 1, 2, 0, 100);
-    settings[1] = map(this.eye_shift, -2, 2, 0, 100);
+    settings[0] = map(this.left_eye_openness, 0, 89.9, 0, 100);
+    settings[1] = map(this.right_eye_openness, 0, 89.9, 0, 100);
     settings[2] = map(this.mouth_size, 0.5, 8, 0, 100);
     return settings;
   }
   
-}
-
-function blobbyFace(positions, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, face_hue, eye_selection, pupil_ratio, iris_hue) {
-  var head = 
-  {
-    x: segment_average(positions.chin)[0],
-    y: positions.chin[0][1],
-    w: dist((positions.chin)[0][0], (positions.chin)[0][1], (positions.chin)[positions.chin.length - 1][0], (positions.chin)[positions.chin.length - 1][1])/2,
-    h: dist((positions.chin)[0][0], (positions.chin)[0][1], ((positions.chin)[0][0] + (positions.chin)[positions.chin.length - 1][0])/2, (positions.chin)[8][1])
-  };
-
-  // finding the rotation of the head so facial features can be rotated with it, head rotation is based on the position of the eyes - it is not created and then rotated
-  var head_tilt = atan2(eye2_y - eye1_y, eye2_x - eye1_x); // I used ChatGPT 3.5 to find this function atan2, the prompt was: "I need to get get the rotation between two points in p5.js"
-
-  push();
-  colorMode(HSB);
-  ellipseMode(RADIUS);
-  rectMode(CENTER);
-  strokeWeight(0);
-  
-  // draw head with black outline
-  var outline_offset = ((head.w + eye1_r + eye2_r) /40);
-  
-// circular head
-  fill(20);
-
-  ellipse(eye1_x, eye1_y, eye1_r + outline_offset);
-  ellipse(eye2_x, eye2_y, eye2_r + outline_offset);
-  ellipse(head.x, head.y, head.w + outline_offset, head.h +outline_offset);
-
-  fill(face_hue, 60, 95);
-
-  ellipse(head.x, head.y, head.w, head.h); 
 
 
+  this.blobbyFace = function (positions, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, face_hue, pupil_ratio, iris_hue) {
+    var head = 
+    {
+      x: segment_average(positions.chin)[0],
+      y: positions.chin[0][1],
+      w: dist((positions.chin)[0][0], (positions.chin)[0][1], (positions.chin)[positions.chin.length - 1][0], (positions.chin)[positions.chin.length - 1][1])/2,
+      h: dist((positions.chin)[0][0], (positions.chin)[0][1], ((positions.chin)[0][0] + (positions.chin)[positions.chin.length - 1][0])/2, (positions.chin)[8][1])
+    };
 
-  // draw mouth
-  push();
+    // finding the rotation of the head so facial features can be rotated with it, head rotation is based on the position of the eyes - it is not created and then rotated
+    var head_tilt = atan2(eye2_y - eye1_y, eye2_x - eye1_x); // I used ChatGPT 3.5 to find this function atan2, the prompt was: "I need to get get the rotation between two points in p5.js"
 
-  strokeWeight(outline_offset);
-  colorMode(HSB, 100);
-  fill(face_hue, 0, 100);
-  stroke(20);  
-
-  beginShape();
-
-  curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
-  curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
-  curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
-  curveVertex(positions.top_lip[8][0], positions.top_lip[8][1]);
-  curveVertex(positions.top_lip[9][0], positions.top_lip[9][1]);
-  curveVertex(positions.top_lip[10][0], positions.top_lip[10][1]);
-  curveVertex(positions.top_lip[11][0], positions.top_lip[11][1]);
-  curveVertex(positions.bottom_lip[8][0], positions.bottom_lip[8][1]);
-  curveVertex(positions.bottom_lip[9][0], positions.bottom_lip[9][1]);
-  curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
-  curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
-  curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
-
-  endShape();
-  
-
-  pop();  
-
-  // draw eyes
-  drawEye(eye1_x, eye1_y, eye1_r, head_tilt, face_hue, eye_selection, pupil_ratio, iris_hue);
-  drawEye(eye2_x, eye2_y, eye2_r, head_tilt, face_hue, eye_selection, pupil_ratio, iris_hue);
-
-  pop();
-}
-
-function drawEye(eye_x, eye_y, eye_r, rotation, face_hue, eye_selection, pupil_ratio, iris_hue) { 
-  var eye_circle_colour = color(face_hue, 50, 100);
-  var white_size = eye_r * 0.8; // amount of the eye space that the white takes up
-  var iris_size = white_size * 0.8; // amount of the white of the eye that the iris takes up
-  var pupil_size = map(pupil_ratio, 0 , 100, 0, iris_size); // mapping pupil size from 0-1 to 0-iris-ratio, changes how much of the iris the pupil takes up
-
-  push();
-
-  translate(eye_x, eye_y);
-
-  // eye circle
-  fill(eye_circle_colour);
-  ellipse(0, 0, eye_r);
-
-  push();
-
-  rotate(rotation);
-
-  // white
-  strokeWeight(0);
-  fill(100);
-  ellipse(0, 0, white_size);
-
-  // iris
-  strokeWeight(0);
-  fill(iris_hue, 50, 50);
-  ellipse(0, 0, iris_size);
-
-  // pupil
-  strokeWeight(0);
-  fill(20);
-  ellipse(0, 0, pupil_size);
-
-  pop();
-
-  // glint - excluded from eye rotation as it's simulating the reflection of a fixed lightsource 
-  strokeWeight(0);
-  fill(100);
-  ellipse(0-(eye_r/4), 0-(eye_r/4), eye_r*0.2);
-
-  push();
-
-  rotate(rotation);
-
-  if(eye_selection == 1) { // tired look eyelids
+    push();
+    colorMode(HSB);
+    ellipseMode(RADIUS);
+    rectMode(CENTER);
     strokeWeight(0);
-    fill(eye_circle_colour)
-    arc(0, 0, eye_r, eye_r, 200, 340, OPEN);
+    
+    // draw head with black outline
+    var outline_offset = ((head.w + eye1_r + eye2_r) /40);
+    
+  // circular head
+    fill(20);
+
+    ellipse(eye1_x, eye1_y, eye1_r + outline_offset);
+    ellipse(eye2_x, eye2_y, eye2_r + outline_offset);
+    ellipse(head.x, head.y, head.w + outline_offset, head.h +outline_offset);
+
+    fill(face_hue, 60, 95);
+
+    ellipse(head.x, head.y, head.w, head.h); 
+
+
+
+    // draw mouth
+    push();
+
+    strokeWeight(outline_offset);
+    colorMode(HSB, 100);
+    fill(face_hue, 0, 100);
+    stroke(20);  
+
+    beginShape();
+
+    curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
+    curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
+    curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
+    curveVertex(positions.top_lip[8][0], positions.top_lip[8][1]);
+    curveVertex(positions.top_lip[9][0], positions.top_lip[9][1]);
+    curveVertex(positions.top_lip[10][0], positions.top_lip[10][1]);
+    curveVertex(positions.top_lip[11][0], positions.top_lip[11][1]);
+    curveVertex(positions.bottom_lip[8][0], positions.bottom_lip[8][1]);
+    curveVertex(positions.bottom_lip[9][0], positions.bottom_lip[9][1]);
+    curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
+    curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
+    curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
+
+    endShape();
+    
+
+    pop();  
+
+    // draw eyes
+    this.drawEye(eye1_x, eye1_y, eye1_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.left_eye_openness);
+    this.drawEye(eye2_x, eye2_y, eye2_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.right_eye_openness);
+
+    pop();
   }
 
-  else if(eye_selection == 2) { // squint eyelids
+  this.drawEye = function(eye_x, eye_y, eye_r, rotation, face_hue, pupil_ratio, iris_hue, eye_openness) { 
+    var eye_circle_colour = color(face_hue, 50, 100);
+    var white_size = eye_r * 0.8; // amount of the eye space that the white takes up
+    var iris_size = white_size * 0.8; // amount of the white of the eye that the iris takes up
+    var pupil_size = map(pupil_ratio, 0 , 100, 0, iris_size); // mapping pupil size from 0-1 to 0-iris-ratio, changes how much of the iris the pupil takes up
+
+    push();
+
+    translate(eye_x, eye_y);
+
+    // eye circle
+    fill(eye_circle_colour);
+    ellipse(0, 0, eye_r);
+
+    push();
+
+    rotate(rotation);
+
+    // white
+    strokeWeight(0);
+    fill(100);
+    ellipse(0, 0, white_size);
+
+    // iris
+    strokeWeight(0);
+    fill(iris_hue, 50, 50);
+    ellipse(0, 0, iris_size);
+
+    // pupil
+    strokeWeight(0);
+    fill(20);
+    ellipse(0, 0, pupil_size);
+
+    pop();
+
+    // glint - excluded from eye rotation as it's simulating the reflection of a fixed lightsource 
+    strokeWeight(0);
+    fill(100);
+    ellipse(0-(eye_r/4), 0-(eye_r/4), eye_r*0.2);
+
+    // eyelids
+
+    push();
+
+    rotate(rotation);
+
     strokeWeight(0);
     fill(eye_circle_colour)
-    arc(0, 0, eye_r, eye_r, 200, 340, OPEN);
-    arc(0, 0, eye_r, eye_r, 20, 160, OPEN);
+    arc(0, 0, eye_r, eye_r, 180+eye_openness, 360-eye_openness, OPEN);
+    arc(0, 0, eye_r, eye_r, 360+eye_openness, 180-eye_openness, OPEN);
+    pop();
+
+    pop();  
   }
-
-  pop();
-
-  pop();  
 }
