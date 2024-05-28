@@ -7,7 +7,7 @@
 var DEBUG_MODE = false;
 
 // this can be used to set the number of sliders to show
-var NUM_SLIDERS = 3;
+var NUM_SLIDERS = 4;
 
 // other variables can be in here too
 // here's some examples for colors used
@@ -147,17 +147,20 @@ function Face() {
 
   /* set internal properties based on list numbers 0-100 */
   this.setProperties = function(settings) {
-    this.left_eye_openness = map(settings[0], 0, 100, 0, 89.9);
-    this.right_eye_openness = map(settings[1], 0, 100, 0, 89.9);
-    this.mouth_size = map(settings[2], 0, 100, 0.5, 8);
+    this.top_left_eyelid = map(settings[0], 0, 100, 0, 60);
+    this.bottom_left_eyelid = map(settings[1], 0, 100, 0, 60);
+    this.top_right_eyelid = map(settings[2], 0, 100, 0, 60);
+    this.bottom_right_eyelid = map(settings[3], 0, 100, 0, 60);
+
   }
 
   /* get internal properties as list of numbers 0-100 */
   this.getProperties = function() {
     let settings = new Array(3);
-    settings[0] = map(this.left_eye_openness, 0, 89.9, 0, 100);
-    settings[1] = map(this.right_eye_openness, 0, 89.9, 0, 100);
-    settings[2] = map(this.mouth_size, 0.5, 8, 0, 100);
+    settings[0] = map(this.top_left_eyelid, 0, 60, 0, 100);
+    settings[1] = map(this.bottom_left_eyelid, 0, 60, 0, 100);
+    settings[2] = map(this.top_right_eyelid, 0, 60, 0, 100);
+    settings[3] = map(this.bottom_right_eyelid, 0, 60, 0, 100);
     return settings;
   }
   
@@ -226,13 +229,13 @@ function Face() {
     pop();  
 
     // draw eyes
-    this.drawEye(eye1_x, eye1_y, eye1_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.left_eye_openness);
-    this.drawEye(eye2_x, eye2_y, eye2_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.right_eye_openness);
+    this.drawEye(eye1_x, eye1_y, eye1_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.top_left_eyelid, this.bottom_left_eyelid);
+    this.drawEye(eye2_x, eye2_y, eye2_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.top_right_eyelid, this.bottom_right_eyelid);
 
     pop();
   }
 
-  this.drawEye = function(eye_x, eye_y, eye_r, rotation, face_hue, pupil_ratio, iris_hue, eye_openness) { 
+  this.drawEye = function(eye_x, eye_y, eye_r, rotation, face_hue, pupil_ratio, iris_hue, top_eyelid_value, bottom_eyelid_value) { 
     var eye_circle_colour = color(face_hue, 50, 100);
     var white_size = eye_r * 0.8; // amount of the eye space that the white takes up
     var iris_size = white_size * 0.8; // amount of the white of the eye that the iris takes up
@@ -280,8 +283,8 @@ function Face() {
 
     strokeWeight(0);
     fill(eye_circle_colour)
-    arc(0, 0, eye_r, eye_r, 180+eye_openness, 360-eye_openness, OPEN);
-    arc(0, 0, eye_r, eye_r, 360+eye_openness, 180-eye_openness, OPEN);
+    arc(0, 0, eye_r, eye_r, 180+top_eyelid_value, 360-top_eyelid_value, OPEN);
+    arc(0, 0, eye_r, eye_r, 360+bottom_eyelid_value, 180-bottom_eyelid_value, OPEN);
     pop();
 
     pop();  
