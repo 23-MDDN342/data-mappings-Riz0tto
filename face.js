@@ -100,12 +100,16 @@ function Face() {
 
 
   this.blobbyFace = function (positions, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, face_hue, pupil_ratio, iris_hue) {
+
+    // Draw head
+
     var head = 
     {
       x: segment_average(positions.chin)[0],
-      y: positions.chin[0][1],
+      y: positions.chin[2][1],
       w: dist((positions.chin)[0][0], (positions.chin)[0][1], (positions.chin)[positions.chin.length - 1][0], (positions.chin)[positions.chin.length - 1][1])/2,
-      h: dist((positions.chin)[0][0], (positions.chin)[0][1], ((positions.chin)[0][0] + (positions.chin)[positions.chin.length - 1][0])/2, (positions.chin)[8][1])
+      //h: dist((positions.chin)[0][0], (positions.chin)[0][1], ((positions.chin)[0][0] + (positions.chin)[positions.chin.length - 1][0])/2, (positions.chin)[8][1])
+      h: dist((positions.chin)[0][0], (positions.chin)[0][1], (positions.chin)[positions.chin.length - 1][0], (positions.chin)[positions.chin.length - 1][1])/2
     };
 
     // finding the rotation of the head so facial features can be rotated with it, head rotation is based on the position of the eyes - it is not created and then rotated
@@ -133,7 +137,7 @@ function Face() {
 
 
 
-    // draw mouth
+    // Draw mouth
 
     push();
 
@@ -182,7 +186,7 @@ function Face() {
 
     pop();  
 
-    // draw eyes
+    // Draw eyes
     this.drawEye(eye1_x, eye1_y, eye1_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.top_left_eyelid, this.bottom_left_eyelid);
     this.drawEye(eye2_x, eye2_y, eye2_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.top_right_eyelid, this.bottom_right_eyelid);
 
