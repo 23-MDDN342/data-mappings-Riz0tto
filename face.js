@@ -7,7 +7,7 @@
 var DEBUG_MODE = false;
 
 // this can be used to set the number of sliders to show
-var NUM_SLIDERS = 5;
+var NUM_SLIDERS = 9;
 
 // other variables can be in here too
 // here's some examples for colors used
@@ -78,22 +78,29 @@ function Face() {
 
   /* set internal properties based on list numbers 0-100 */
   this.setProperties = function(settings) {
-    this.top_left_eyelid = map(settings[0], 0, 100, 0, 60);
-    this.bottom_left_eyelid = map(settings[1], 0, 100, 0, 60);
-    this.top_right_eyelid = map(settings[2], 0, 100, 0, 60);
-    this.bottom_right_eyelid = map(settings[3], 0, 100, 0, 60);
-    this.lip_contrast = map(settings[4], 0, 100, 0, 100);
-
+    this.eye_openness = map(settings[0], 0, 100, 0, 60);
+    this.lip_contrast = map(settings[1], 0, 100, 0, 100);
+    this.age = map(settings[2], 0, 100, 0, 100);
+    this.gender = map(settings[3], 0, 100, 0, 100);
+    this.smiling = map(settings[4], 0, 100, 0, 100);
+    this.has_hair = map(settings[5], 0, 100, 0, 100);
+    this.hair_darkness = map(settings[6], 0, 100, 20, 100);
+    this.long_hair = map(settings[7], 0, 100, 0, 100);
+    this.hair_redness = map(settings[8], 0, 100, 0, 12);
   }
 
   /* get internal properties as list of numbers 0-100 */
   this.getProperties = function() {
     let settings = new Array(3);
-    settings[0] = map(this.top_left_eyelid, 0, 60, 0, 100);
-    settings[1] = map(this.bottom_left_eyelid, 0, 60, 0, 100);
-    settings[2] = map(this.top_right_eyelid, 0, 60, 0, 100);
-    settings[3] = map(this.bottom_right_eyelid, 0, 60, 0, 100);
-    settings[4] = map(this.lip_contrast, 0, 100, 0, 100);
+    settings[0] = map(this.eye_openness, 0, 60, 0, 100);
+    settings[1] = map(this.lip_contrast, 0, 100, 0, 100);
+    settings[2] = map(this.age, 0, 100, 0, 100);
+    settings[3] = map(this.gender, 0, 100, 0, 100)
+    settings[4] = map(this.smiling, 0, 100, 0, 100);
+    settings[5] = map(this.has_hair, 0, 100, 0, 100);
+    settings[6] = map(this.hair_darkness, 20, 100, 0, 100);
+    settings[7] = map(this.long_hair, 0, 100, 0, 100);
+    settings[8] = map(this.hair_redness, 0, 12, 0, 100);
     return settings;
   }
   
@@ -121,22 +128,68 @@ function Face() {
     rectMode(CENTER);
     strokeWeight(0);
     
-    // draw head with black outline
+    // black outline offset
     var outline_offset = ((head.w + eye1_r + eye2_r) /40);
     
-  // circular head
+    // hair
+    if(this.has_hair > 50) {
+
+      fill(20);
+      
+      ellipse(head.x, head.y - head.h*0.2, head.w*1.2 + outline_offset, (head.h) + outline_offset);
+
+      if(this.long_hair > 50) {
+        ellipse(head.x, head.y + head.h*0.2, head.w*1.2 + outline_offset, (head.h) + outline_offset);
+      }
+
+      fill(12-this.hair_redness, 80 - this.age, this.hair_darkness);
+
+      ellipse(head.x, head.y - head.h*0.2, head.w*1.2, head.h);
+
+      if(this.long_hair > 50) {
+        ellipse(head.x, head.y + head.h*0.2, head.w*1.2, head.h);
+      }
+
+    }
+
+    // face
     fill(20);
 
     ellipse(eye1_x, eye1_y, eye1_r + outline_offset);
     ellipse(eye2_x, eye2_y, eye2_r + outline_offset);
-    ellipse(head.x, head.y, head.w + outline_offset, head.h +outline_offset);
+    ellipse(head.x, head.y, head.w + outline_offset, head.h + outline_offset);    
 
     fill(face_hue, 60, 90);
 
     ellipse(head.x, head.y, head.w, head.h); 
 
+    // wrinkles
+    var wrinkle_darkness = 90-(0.2*this.age); // darken (become more noticeable) if older
+    if(this.age < 33) wrinkle_darkness = 90; // threshold for showing at all, don't show wrinkles under value of 33 (one third)
+
+    push();
+
+    strokeWeight(outline_offset/2);
+    stroke(face_hue, 60, wrinkle_darkness);
+
+    line(head.x-head.w/3, head.y-head.h*0.8, head.x+head.w/3, head.y-head.h*0.8);
+    line(head.x-head.w/3, head.y-head.h*0.7, head.x+head.w/3, head.y-head.h*0.7);
+    line(head.x-head.w/3, head.y-head.h*0.6, head.x+head.w/3, head.y-head.h*0.6);
+
+    pop();
 
 
+    // blush
+    if(this.gender > 50) {
+      push();
+
+      strokeWeight(0);
+      fill(0, 60, 90, 50);
+      ellipse(-head.w*0.5, segment_average(positions.top_lip)[1], head.w/5);
+      ellipse(head.w*0.5, segment_average(positions.top_lip)[1], head.w/5)
+
+      pop();
+    }
     // Draw mouth
 
     push();
@@ -187,13 +240,13 @@ function Face() {
     pop();  
 
     // Draw eyes
-    this.drawEye(eye1_x, eye1_y, eye1_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.top_left_eyelid, this.bottom_left_eyelid);
-    this.drawEye(eye2_x, eye2_y, eye2_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.top_right_eyelid, this.bottom_right_eyelid);
+    this.drawEye(eye1_x, eye1_y, eye1_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.eye_openness);
+    this.drawEye(eye2_x, eye2_y, eye2_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.eye_openness);
 
     pop();
   }
 
-  this.drawEye = function(eye_x, eye_y, eye_r, rotation, face_hue, pupil_ratio, iris_hue, top_eyelid_value, bottom_eyelid_value) { 
+  this.drawEye = function(eye_x, eye_y, eye_r, rotation, face_hue, pupil_ratio, iris_hue, eye_openness_value) { 
     var eye_circle_colour = color(face_hue, 50, 95);
     var white_size = eye_r * 0.8; // amount of the eye space that the white takes up
     var iris_size = white_size * 0.8; // amount of the white of the eye that the iris takes up
@@ -229,9 +282,14 @@ function Face() {
     pop();
 
     // glint - excluded from eye rotation as it's simulating the reflection of a fixed lightsource 
+
     strokeWeight(0);
     fill(100);
-    ellipse(0-(eye_r/4), 0-(eye_r/4), eye_r*0.2);
+    if(this.smiling < 50) ellipse(0-(eye_r/4), 0-(eye_r/4), eye_r*0.2);
+    else {
+      ellipse(0-(eye_r/4), 0-(eye_r/4), eye_r*0.2, eye_r*0.1);
+      ellipse(0-(eye_r/4), 0-(eye_r/4), eye_r*0.1, eye_r*0.2);
+    }
 
     // eyelids
 
@@ -241,8 +299,8 @@ function Face() {
 
     strokeWeight(0);
     fill(eye_circle_colour)
-    arc(0, 0, eye_r, eye_r, 180+top_eyelid_value, 360-top_eyelid_value, OPEN);
-    arc(0, 0, eye_r, eye_r, 360+bottom_eyelid_value, 180-bottom_eyelid_value, OPEN);
+    arc(0, 0, eye_r, eye_r, 180+eye_openness_value, 360-eye_openness_value, OPEN);
+    arc(0, 0, eye_r, eye_r, 360+eye_openness_value, 180-eye_openness_value, OPEN);
     pop();
 
     pop();  
