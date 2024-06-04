@@ -36,3 +36,16 @@ The faces I made for assignment 3 were very minimalist and cartoony, so implemen
 - Hair Redness
     - Determines where the hue of the hair colour sits between yellow and red.
     - Based on how red the subject's hair is.
+
+### Successfulness of the Training
+
+Though the variables I set for the training allowed me get through the training quiz with minimal incorrect answers, the AI didn't seem to connect all the variables to the traits I intended it to. It seems to be very good at distinguishing gender and alright at determining age, however it is inconsistent with the rest. For example it often thinks the subject is smiling when they aren't. 
+
+One cause could be that some of the values are connected indirectly, such as gender and hair length (female subjects are more likely to have long hair), or age and gender (subjects wearing makeup may look younger).
+
+Another possibility is that the training images lack broad enough samples within specific traits. One thing I noticed was that because the images are largely portrait photos taken with the flash on, the subjects are often slightly squinting making the 'eye openness' variable operate within a small range. There are also more older men than older women, which could be why the AI seems to assume men are older. This is also true of men with long hair, there are only three in the training images so the long hair is seen as an outlier.
+
+### Sample Images
+
+For my sample images I chose British sitcoms, as my faces are fairly absurd and comedic, and images of the casts of these shows each have a few people to create faces for. These are not the most diverse groups but there are a range of ages, hair styles and expressions.
+
