@@ -4,10 +4,10 @@
  */  
 
 // remove this or set to false to enable full program (load will be slower)
-var DEBUG_MODE = true;
+var DEBUG_MODE = false;
 
 // this can be used to set the number of sliders to show
-var NUM_SLIDERS = 3;
+var NUM_SLIDERS = 9;
 
 // other variables can be in here too
 // here's some examples for colors used
@@ -30,6 +30,7 @@ function segment_average(segment) {
 
 // This where you define your own face object
 function Face() {
+
   // these are state variables for a face
   // (your variables should be different!)
   this.detailColour = [204, 136, 17];
@@ -48,71 +49,10 @@ function Face() {
    *    bottom_lip, top_lip, nose_tip, nose_bridge, 
    */  
   this.draw = function(positions) {
-    console.log()
-    // head
-    ellipseMode(CENTER);
-    stroke(stroke_color);
-    fill(this.mainColour);
-    ellipse(segment_average(positions.chin)[0], 0, 3, 4);
-    noStroke();
-
-
-    // mouth
-    fill(this.detailColour);
-    ellipse(segment_average(positions.bottom_lip)[0], segment_average(positions.bottom_lip)[1], 1.36, 0.25 * this.mouth_size);
-
-    // eyebrows
-    fill( this.eyebrowColour);
-    stroke( this.eyebrowColour);
-    strokeWeight(0.08);
-    this.draw_segment(positions.left_eyebrow);
-    this.draw_segment(positions.right_eyebrow);
-
-    // draw the chin segment using points
-    fill(this.chinColour);
-    stroke(this.chinColour);
-    this.draw_segment(positions.chin);
-
-    fill(100, 0, 100);
-    stroke(100, 0, 100);
-    this.draw_segment(positions.nose_bridge);
-    this.draw_segment(positions.nose_tip);
-
-    strokeWeight(0.03);
-
-    fill(this.lipColour);
-    stroke(this.lipColour);
-    this.draw_segment(positions.top_lip);
-    this.draw_segment(positions.bottom_lip);
-
-    let left_eye_pos = segment_average(positions.left_eye);
-    let right_eye_pos = segment_average(positions.right_eye);
-
-    // eyes
-    noStroke();
-    let curEyeShift = 0.04 * this.eye_shift;
-    if(this.num_eyes == 2) {
-      fill(this.detailColour);
-      ellipse(left_eye_pos[0], left_eye_pos[1], 0.5, 0.33);
-      ellipse(right_eye_pos[0], right_eye_pos[1], 0.5, 0.33);
-
-      // fill(this.mainColour);
-      // ellipse(left_eye_pos[0] + curEyeShift, left_eye_pos[1], 0.18);
-      // ellipse(right_eye_pos[0] + curEyeShift, right_eye_pos[1], 0.18);
-    }
-    else {
-      let eyePosX = (left_eye_pos[0] + right_eye_pos[0]) / 2;
-      let eyePosY = (left_eye_pos[1] + right_eye_pos[1]) / 2;
-
-      fill(this.detailColour);
-      ellipse(eyePosX, eyePosY, 0.45, 0.27);
-
-      fill(this.mainColour);
-      ellipse(eyePosX - 0.1 + curEyeShift, eyePosY, 0.18);
-    }
-   // fill(0)
-   //ellipse(0,0, 0.5,0.5) center point
-   //rect(-2,-2,4.5,4) sizing debug 
+  left_eye_pos = positions.chin[0];
+  right_eye_pos = positions.chin[positions.chin.length-1];
+  this.blobbyFace(positions, left_eye_pos[0], left_eye_pos[1], 1, right_eye_pos[0], right_eye_pos[1], 1, 20, 50, 180, 2);
+  
   }
 
   // example of a function *inside* the face object.
@@ -133,21 +73,239 @@ function Face() {
           line(px, py, nx, ny);
         }
     }
+    
   };
 
   /* set internal properties based on list numbers 0-100 */
   this.setProperties = function(settings) {
-    this.num_eyes = int(map(settings[0], 0, 100, 1, 2));
-    this.eye_shift = map(settings[1], 0, 100, -2, 2);
-    this.mouth_size = map(settings[2], 0, 100, 0.5, 8);
+    this.eye_openness = map(settings[0], 0, 100, 0, 60);
+    this.lip_contrast = map(settings[1], 0, 100, 0, 100);
+    this.age = map(settings[2], 0, 100, 0, 100);
+    this.gender = map(settings[3], 0, 100, 0, 100);
+    this.smiling = map(settings[4], 0, 100, 0, 100);
+    this.has_hair = map(settings[5], 0, 100, 0, 100);
+    this.hair_darkness = map(settings[6], 0, 100, 20, 100);
+    this.long_hair = map(settings[7], 0, 100, 0, 100);
+    this.hair_redness = map(settings[8], 0, 100, 0, 12);
   }
 
   /* get internal properties as list of numbers 0-100 */
   this.getProperties = function() {
     let settings = new Array(3);
-    settings[0] = map(this.num_eyes, 1, 2, 0, 100);
-    settings[1] = map(this.eye_shift, -2, 2, 0, 100);
-    settings[2] = map(this.mouth_size, 0.5, 8, 0, 100);
+    settings[0] = map(this.eye_openness, 0, 60, 0, 100);
+    settings[1] = map(this.lip_contrast, 0, 100, 0, 100);
+    settings[2] = map(this.age, 0, 100, 0, 100);
+    settings[3] = map(this.gender, 0, 100, 0, 100)
+    settings[4] = map(this.smiling, 0, 100, 0, 100);
+    settings[5] = map(this.has_hair, 0, 100, 0, 100);
+    settings[6] = map(this.hair_darkness, 20, 100, 0, 100);
+    settings[7] = map(this.long_hair, 0, 100, 0, 100);
+    settings[8] = map(this.hair_redness, 0, 12, 0, 100);
     return settings;
+  }
+  
+
+
+  this.blobbyFace = function (positions, eye1_x, eye1_y, eye1_r, eye2_x, eye2_y, eye2_r, face_hue, pupil_ratio, iris_hue) {
+
+    // Draw head
+
+    var head = 
+    {
+      x: segment_average(positions.chin)[0],
+      y: positions.chin[2][1],
+      w: dist((positions.chin)[0][0], (positions.chin)[0][1], (positions.chin)[positions.chin.length - 1][0], (positions.chin)[positions.chin.length - 1][1])/2,
+      //h: dist((positions.chin)[0][0], (positions.chin)[0][1], ((positions.chin)[0][0] + (positions.chin)[positions.chin.length - 1][0])/2, (positions.chin)[8][1])
+      h: dist((positions.chin)[0][0], (positions.chin)[0][1], (positions.chin)[positions.chin.length - 1][0], (positions.chin)[positions.chin.length - 1][1])/2
+    };
+
+    // finding the rotation of the head so facial features can be rotated with it, head rotation is based on the position of the eyes - it is not created and then rotated
+    var head_tilt = atan2(eye2_y - eye1_y, eye2_x - eye1_x); // I used ChatGPT 3.5 to find this function atan2, the prompt was: "I need to get get the rotation between two points in p5.js"
+
+    push();
+    colorMode(HSB);
+    ellipseMode(RADIUS);
+    rectMode(CENTER);
+    strokeWeight(0);
+    
+    // black outline offset
+    var outline_offset = ((head.w + eye1_r + eye2_r) /40);
+    
+    // hair
+    if(this.has_hair > 50) { // only if the subject has hair 
+
+      fill(20);
+      
+      ellipse(head.x, head.y - head.h*0.2, head.w*1.2 + outline_offset, (head.h) + outline_offset);
+
+      if(this.long_hair > 50) { // adds another ellipse lower down if the hair is long
+        ellipse(head.x, head.y + head.h*0.2, head.w*1.2 + outline_offset, (head.h) + outline_offset);
+      }
+
+      fill(12-this.hair_redness, 80 - this.age, this.hair_darkness); // hair hue changes based on 'hair redness', saturation changes based on age, brightness is from 'hair darkness'
+
+      ellipse(head.x, head.y - head.h*0.2, head.w*1.2, head.h);
+
+      if(this.long_hair > 50) {
+        ellipse(head.x, head.y + head.h*0.2, head.w*1.2, head.h);
+      }
+
+    }
+
+    // face
+    fill(20); // draw elements of the face in black with a slight size offset before drawing elements in colour to create a stroke effect
+
+    ellipse(eye1_x, eye1_y, eye1_r + outline_offset);
+    ellipse(eye2_x, eye2_y, eye2_r + outline_offset);
+    ellipse(head.x, head.y, head.w + outline_offset, head.h + outline_offset);    
+
+    fill(face_hue, 60, 90);
+
+    ellipse(head.x, head.y, head.w, head.h); 
+
+    // wrinkles
+    var wrinkle_darkness = 90-(0.2*this.age); // darken (become more noticeable) if older
+    if(this.age < 33) wrinkle_darkness = 90; // threshold for showing at all, don't show wrinkles under value of 33 (one third)
+
+    push();
+
+    strokeWeight(outline_offset/2);
+    stroke(face_hue, 60, wrinkle_darkness);
+
+    line(head.x-head.w/3, head.y-head.h*0.8, head.x+head.w/3, head.y-head.h*0.8);
+    line(head.x-head.w/3, head.y-head.h*0.7, head.x+head.w/3, head.y-head.h*0.7);
+    line(head.x-head.w/3, head.y-head.h*0.6, head.x+head.w/3, head.y-head.h*0.6);
+
+    pop();
+
+
+    // blush
+    if(this.gender > 50) { // only has blush if female
+      push();
+
+      strokeWeight(0);
+      fill(0, 60, 90, 50);
+      ellipse(-head.w*0.5, segment_average(positions.top_lip)[1], head.w/5);
+      ellipse(head.w*0.5, segment_average(positions.top_lip)[1], head.w/5)
+
+      pop();
+    }
+
+    // Draw mouth
+
+    // lips
+    push();
+
+    strokeWeight(0);
+    colorMode(HSB, 100);
+    fill(face_hue, 60, this.lip_contrast); // lip hue and saturation are the same as the face, brightness is determined by 'lip contrast'
+    stroke(20); 
+
+    beginShape(); // create the lips using curves, only include points around the outside of the mouth
+
+    for(var i = 0; i < positions.bottom_lip.length-1; i++) {
+      if(i > 10 || i < 8) curveVertex(positions.bottom_lip[i][0], positions.bottom_lip[i][1]);
+    }
+    for(var i = 0; i < positions.top_lip.length-1; i++) {
+      if(i > 11 || i < 7) curveVertex(positions.top_lip[i][0], positions.top_lip[i][1]);
+    }
+
+    endShape(CLOSE);
+
+    pop();
+
+    // teeth
+    push();
+
+    strokeWeight(0);
+    colorMode(HSB, 100);
+    fill(face_hue, 0, 100);
+    stroke(20);  
+
+    beginShape();
+
+    curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
+    curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
+    curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
+    curveVertex(positions.top_lip[8][0], positions.top_lip[8][1]);
+    curveVertex(positions.top_lip[9][0], positions.top_lip[9][1]);
+    curveVertex(positions.top_lip[10][0], positions.top_lip[10][1]);
+    curveVertex(positions.top_lip[11][0], positions.top_lip[11][1]);
+    curveVertex(positions.bottom_lip[8][0], positions.bottom_lip[8][1]);
+    curveVertex(positions.bottom_lip[9][0], positions.bottom_lip[9][1]);
+    curveVertex(positions.bottom_lip[10][0], positions.bottom_lip[10][1]);
+    curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
+    curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
+
+    endShape();
+
+    pop();  
+
+    
+    // Draw eyes
+    this.drawEye(eye1_x, eye1_y, eye1_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.eye_openness);
+    this.drawEye(eye2_x, eye2_y, eye2_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.eye_openness);
+
+    pop();
+  }
+
+  this.drawEye = function(eye_x, eye_y, eye_r, rotation, face_hue, pupil_ratio, iris_hue, eye_openness_value) { 
+    var eye_circle_colour = color(face_hue, 50, 95);
+    var white_size = eye_r * 0.8; // amount of the eye space that the white takes up
+    var iris_size = white_size * 0.8; // amount of the white of the eye that the iris takes up
+    var pupil_size = map(pupil_ratio, 0 , 100, 0, iris_size); // mapping pupil size from 0-1 to 0-iris-ratio, changes how much of the iris the pupil takes up
+
+    push();
+
+    translate(eye_x, eye_y);
+
+    // eye circle
+    fill(eye_circle_colour);
+    ellipse(0, 0, eye_r);
+
+    push();
+
+    rotate(rotation);
+
+    // white
+    strokeWeight(0);
+    fill(100);
+    ellipse(0, 0, white_size);
+
+    // iris
+    strokeWeight(0);
+    fill(iris_hue, 50, 50);
+    ellipse(0, 0, iris_size);
+
+    // pupil
+    strokeWeight(0);
+    fill(20);
+    ellipse(0, 0, pupil_size);
+
+    pop();
+
+    // glint - excluded from eye rotation as it's simulating the reflection of a fixed lightsource 
+
+    strokeWeight(0);
+    fill(100);
+    if(this.smiling < 50) ellipse(0-(eye_r/4), 0-(eye_r/4), eye_r*0.2);
+    else {
+      ellipse(0-(eye_r/4), 0-(eye_r/4), eye_r*0.2, eye_r*0.1);
+      ellipse(0-(eye_r/4), 0-(eye_r/4), eye_r*0.1, eye_r*0.2);
+    }
+
+    // eyelids
+
+    push();
+
+    rotate(rotation);
+
+    strokeWeight(0);
+    fill(eye_circle_colour)
+    arc(0, 0, eye_r, eye_r, 180+eye_openness_value, 360-eye_openness_value, OPEN);
+    arc(0, 0, eye_r, eye_r, 360+eye_openness_value, 180-eye_openness_value, OPEN);
+    pop();
+
+    pop();  
   }
 }
