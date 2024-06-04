@@ -1,7 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/HpplOQZx)
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=14993367&assignment_repo_type=AssignmentRepo)
 ## 2024 MDDN342 Assignment 3: Data Mappings
 
-REPLACE ALL TEXT IN THIS FILE
-
-This README should be used to document your design.
+The faces I made for assignment 3 were very minimalist and cartoony, so implementing them into this project was challenging. When their features were mapped onto a human face they looked odd and creepy. To preserve the style of the faces, I decided not to accurately map the eyes, as I believe them to be the core of the original design, along with the circular head. I did however create a new mouth using curve shapes accurately mapping to the points on the lips. The 
