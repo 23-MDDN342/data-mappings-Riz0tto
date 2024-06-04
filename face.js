@@ -132,17 +132,17 @@ function Face() {
     var outline_offset = ((head.w + eye1_r + eye2_r) /40);
     
     // hair
-    if(this.has_hair > 50) {
+    if(this.has_hair > 50) { // only if the subject has hair 
 
       fill(20);
       
       ellipse(head.x, head.y - head.h*0.2, head.w*1.2 + outline_offset, (head.h) + outline_offset);
 
-      if(this.long_hair > 50) {
+      if(this.long_hair > 50) { // adds another ellipse lower down if the hair is long
         ellipse(head.x, head.y + head.h*0.2, head.w*1.2 + outline_offset, (head.h) + outline_offset);
       }
 
-      fill(12-this.hair_redness, 80 - this.age, this.hair_darkness);
+      fill(12-this.hair_redness, 80 - this.age, this.hair_darkness); // hair hue changes based on 'hair redness', saturation changes based on age, brightness is from 'hair darkness'
 
       ellipse(head.x, head.y - head.h*0.2, head.w*1.2, head.h);
 
@@ -153,7 +153,7 @@ function Face() {
     }
 
     // face
-    fill(20);
+    fill(20); // draw elements of the face in black with a slight size offset before drawing elements in colour to create a stroke effect
 
     ellipse(eye1_x, eye1_y, eye1_r + outline_offset);
     ellipse(eye2_x, eye2_y, eye2_r + outline_offset);
@@ -180,7 +180,7 @@ function Face() {
 
 
     // blush
-    if(this.gender > 50) {
+    if(this.gender > 50) { // only has blush if female
       push();
 
       strokeWeight(0);
@@ -190,16 +190,18 @@ function Face() {
 
       pop();
     }
+
     // Draw mouth
 
+    // lips
     push();
 
     strokeWeight(0);
     colorMode(HSB, 100);
-    fill(face_hue, 60, this.lip_contrast);
+    fill(face_hue, 60, this.lip_contrast); // lip hue and saturation are the same as the face, brightness is determined by 'lip contrast'
     stroke(20); 
 
-    beginShape();
+    beginShape(); // create the lips using curves, only include points around the outside of the mouth
 
     for(var i = 0; i < positions.bottom_lip.length-1; i++) {
       if(i > 10 || i < 8) curveVertex(positions.bottom_lip[i][0], positions.bottom_lip[i][1]);
@@ -212,6 +214,7 @@ function Face() {
 
     pop();
 
+    // teeth
     push();
 
     strokeWeight(0);
@@ -235,10 +238,10 @@ function Face() {
     curveVertex(positions.top_lip[7][0], positions.top_lip[7][1]);
 
     endShape();
-    
 
     pop();  
 
+    
     // Draw eyes
     this.drawEye(eye1_x, eye1_y, eye1_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.eye_openness);
     this.drawEye(eye2_x, eye2_y, eye2_r, head_tilt, face_hue, pupil_ratio, iris_hue, this.eye_openness);
